@@ -1,0 +1,20 @@
+[project]
+name = "raj_customizations"
+authors = [
+    { name = "moiz@samtech-solutions.com", email = "moiz@samtech-solutions.com"}
+]
+description = "Raj Customizations"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    # "frappe~=15.0.0" # Installed and managed by bench.
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+# These dependencies are only installed when developer mode is enabled
+[tool.bench.dev-dependencies]
+# package_name = "~=1.1.0"
