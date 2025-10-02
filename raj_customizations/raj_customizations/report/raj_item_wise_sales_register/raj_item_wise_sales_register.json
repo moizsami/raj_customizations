@@ -1,0 +1,40 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2022-06-04 17:27:44.213411",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 35,
+ "is_standard": "Yes",
+ "json": "{\"columns\":[{\"label\":\"Item Code\",\"fieldname\":\"item_code\",\"fieldtype\":\"Link\",\"options\":\"Item\",\"width\":120,\"id\":\"item_code\",\"name\":\"Item Code\",\"editable\":false,\"compareValue\":null},{\"label\":\"Item Group\",\"fieldname\":\"item_group\",\"fieldtype\":\"Link\",\"options\":\"Item Group\",\"width\":120,\"id\":\"item_group\",\"name\":\"Item Group\",\"editable\":false,\"compareValue\":null},{\"label\":\"Invoice\",\"fieldname\":\"invoice\",\"fieldtype\":\"Link\",\"options\":\"Sales Invoice\",\"width\":120,\"id\":\"invoice\",\"name\":\"Invoice\",\"editable\":false,\"compareValue\":null},{\"label\":\"Posting Date\",\"fieldname\":\"posting_date\",\"fieldtype\":\"Date\",\"width\":120,\"id\":\"posting_date\",\"name\":\"Posting Date\",\"editable\":false},{\"label\":\"Customer Group\",\"fieldname\":\"customer_group\",\"fieldtype\":\"Link\",\"options\":\"Customer Group\",\"width\":120,\"id\":\"customer_group\",\"name\":\"Customer Group\",\"editable\":false,\"compareValue\":null},{\"label\":\"Customer\",\"fieldname\":\"customer\",\"fieldtype\":\"Link\",\"options\":\"Customer\",\"width\":120,\"id\":\"customer\",\"name\":\"Customer\",\"editable\":false,\"compareValue\":null},{\"label\":\"Territory\",\"fieldname\":\"territory\",\"fieldtype\":\"Link\",\"options\":\"Territory\",\"width\":80,\"id\":\"territory\",\"name\":\"Territory\",\"editable\":false,\"compareValue\":null},{\"label\":\"Sales Order\",\"fieldname\":\"sales_order\",\"fieldtype\":\"Link\",\"options\":\"Sales Order\",\"width\":100,\"id\":\"sales_order\",\"name\":\"Sales Order\",\"editable\":false,\"compareValue\":null},{\"label\":\"Delivery Note\",\"fieldname\":\"delivery_note\",\"fieldtype\":\"Link\",\"options\":\"Delivery Note\",\"width\":100,\"id\":\"delivery_note\",\"name\":\"Delivery Note\",\"editable\":false,\"compareValue\":null},{\"label\":\"Stock Qty\",\"fieldname\":\"stock_qty\",\"fieldtype\":\"Float\",\"width\":100,\"id\":\"stock_qty\",\"name\":\"Stock Qty\",\"editable\":false,\"compareValue\":null},{\"label\":\"Stock UOM\",\"fieldname\":\"stock_uom\",\"fieldtype\":\"Link\",\"options\":\"UOM\",\"width\":100,\"id\":\"stock_uom\",\"name\":\"Stock UOM\",\"editable\":false,\"compareValue\":null},{\"label\":\"Rate\",\"fieldname\":\"rate\",\"fieldtype\":\"Float\",\"options\":\"currency\",\"width\":100,\"id\":\"rate\",\"name\":\"Rate\",\"editable\":false,\"compareValue\":null},{\"label\":\"Amount\",\"fieldname\":\"amount\",\"fieldtype\":\"Currency\",\"options\":\"currency\",\"width\":100,\"id\":\"amount\",\"name\":\"Amount\",\"editable\":false,\"compareValue\":null},{\"label\":\"14% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Rate\",\"fieldname\":\"14%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_rate\",\"fieldtype\":\"Float\",\"width\":100,\"id\":\"14%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_rate\",\"name\":\"14% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Rate\",\"editable\":false,\"compareValue\":null},{\"label\":\"14% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Amount\",\"fieldname\":\"14%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_amount\",\"fieldtype\":\"Currency\",\"options\":\"currency\",\"width\":100,\"id\":\"14%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_amount\",\"name\":\"14% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Amount\",\"editable\":false,\"compareValue\":null},{\"label\":\"5% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Rate\",\"fieldname\":\"5%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_rate\",\"fieldtype\":\"Float\",\"width\":100,\"id\":\"5%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_rate\",\"name\":\"5% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Rate\",\"editable\":false,\"compareValue\":null},{\"label\":\"5% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Amount\",\"fieldname\":\"5%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_amount\",\"fieldtype\":\"Currency\",\"options\":\"currency\",\"width\":100,\"id\":\"5%___\u0636\u0631\u064a\u0628\u0629_\u0642\u064a\u0645\u0629_\u0645\u0636\u0627\u0641\u0629_amount\",\"name\":\"5% - \u0636\u0631\u064a\u0628\u0629 \u0642\u064a\u0645\u0629 \u0645\u0636\u0627\u0641\u0629 Amount\",\"editable\":false,\"compareValue\":null},{\"label\":\"\u0636\u0631\u0627\u0626\u0628 \u0627\u0631\u0628\u0627\u062d \u062a\u062c\u0627\u0631\u064a\u0629 \u0648 \u0635\u0646\u0627\u0639\u064a\u0629 Rate\",\"fieldname\":\"\u0636\u0631\u0627\u0626\u0628_\u0627\u0631\u0628\u0627\u062d_\u062a\u062c\u0627\u0631\u064a\u0629_\u0648_\u0635\u0646\u0627\u0639\u064a\u0629_rate\",\"fieldtype\":\"Float\",\"width\":100,\"id\":\"\u0636\u0631\u0627\u0626\u0628_\u0627\u0631\u0628\u0627\u062d_\u062a\u062c\u0627\u0631\u064a\u0629_\u0648_\u0635\u0646\u0627\u0639\u064a\u0629_rate\",\"name\":\"\u0636\u0631\u0627\u0626\u0628 \u0627\u0631\u0628\u0627\u062d \u062a\u062c\u0627\u0631\u064a\u0629 \u0648 \u0635\u0646\u0627\u0639\u064a\u0629 Rate\",\"editable\":false,\"compareValue\":null},{\"label\":\"\u0636\u0631\u0627\u0626\u0628 \u0627\u0631\u0628\u0627\u062d \u062a\u062c\u0627\u0631\u064a\u0629 \u0648 \u0635\u0646\u0627\u0639\u064a\u0629 Amount\",\"fieldname\":\"\u0636\u0631\u0627\u0626\u0628_\u0627\u0631\u0628\u0627\u062d_\u062a\u062c\u0627\u0631\u064a\u0629_\u0648_\u0635\u0646\u0627\u0639\u064a\u0629_amount\",\"fieldtype\":\"Currency\",\"options\":\"currency\",\"width\":100,\"id\":\"\u0636\u0631\u0627\u0626\u0628_\u0627\u0631\u0628\u0627\u062d_\u062a\u062c\u0627\u0631\u064a\u0629_\u0648_\u0635\u0646\u0627\u0639\u064a\u0629_amount\",\"name\":\"\u0636\u0631\u0627\u0626\u0628 \u0627\u0631\u0628\u0627\u062d \u062a\u062c\u0627\u0631\u064a\u0629 \u0648 \u0635\u0646\u0627\u0639\u064a\u0629 Amount\",\"editable\":false,\"compareValue\":null},{\"label\":\"Total Tax\",\"fieldname\":\"total_tax\",\"fieldtype\":\"Currency\",\"options\":\"currency\",\"width\":100,\"id\":\"total_tax\",\"name\":\"Total Tax\",\"editable\":false,\"compareValue\":null},{\"label\":\"Total\",\"fieldname\":\"total\",\"fieldtype\":\"Currency\",\"options\":\"currency\",\"width\":100,\"id\":\"total\",\"name\":\"Total\",\"editable\":false,\"compareValue\":null}]}",
+ "letter_head": "RBF",
+ "letterhead": null,
+ "modified": "2025-07-24 12:56:11.552507",
+ "modified_by": "Administrator",
+ "module": "Raj Customizations",
+ "name": "Raj Item-wise Sales Register",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Sales Invoice",
+ "reference_report": "Item-wise Sales Register",
+ "report_name": "Raj Item-wise Sales Register",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Employee Self Service"
+  },
+  {
+   "role": "Sales User 2"
+  }
+ ],
+ "timeout": 0
+}

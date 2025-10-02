@@ -23,6 +23,21 @@ app_license = "mit"
 
 # Includes in <head>
 # ------------------
+# doc_events = {
+#     "Salary Slip": {
+#         "before_save": "raj_customizations.raj_customizations.weekly_absence.apply_weekly_deduction",
+#         "before_save": "raj_customizations.raj_customizations.overtime_calculation.apply_weekly_deduction"
+#     }
+# }
+
+#app_include_js = "/assets/custom_app/js/workflow_reject.js"
+
+doc_events = {
+    "Salary Slip": {
+        "before_save": "raj_customizations.raj_customizations.trigger_overtime_absebse.before_save_salary_slip"
+    }
+}
+
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/raj_customizations/css/raj_customizations.css"
