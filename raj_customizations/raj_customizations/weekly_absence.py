@@ -164,6 +164,11 @@ def apply_weekly_deduction(doc, method):
     - Store it in custom field (for reference) AND inject a deduction row.
     - Recompute totals so payroll-generated drafts show it immediately.
     """
+
+    # --- filter by salary structure ---
+    if doc.salary_structure != "Workers Monthly 2025 v2":
+        return  # exit early, do nothing
+
     # determine payroll window just to anchor the month
     payroll_start = payroll_end = None
     if getattr(doc, "payroll_entry", None):
@@ -178,10 +183,7 @@ def apply_weekly_deduction(doc, method):
     if not (payroll_start and payroll_end):
         # fallback: do nothing rather than corrupt totals
         return
-    if not _ssa_variable_gt_zero(doc.employee, payroll_end, fieldname="variable"):
-        _remove_deduction_row(doc, DEDUCT_COMPONENT)
-        _recompute_totals(doc)  # keep draft figures correct if we removed something
-        return
+
     total = calculate_weekly_deduction(doc.employee, payroll_start, payroll_end)
 
     # keep the reference field (and trigger any formula watchers that DO listen)
