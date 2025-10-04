@@ -8,6 +8,37 @@ DEDUCT_COMPONENT = "خصم الحوافز"       # must exist as a Deduction Sal
 MONTHLY_MAX_DEDUCT = 800               # cap
 
 # ---------- calc helpers ----------
+# --- SSA guard: only run if the latest submitted SSA has variable > 0 ---
+def _ssa_variable_gt_zero(employee, as_of_date, fieldname="variable"):
+    """Return True iff the most recent submitted SSA (from_date <= as_of_date)
+    has the numeric field 'fieldname' > 0.  Adjust fieldname if your site uses a custom one
+    (e.g. 'custom_variable')."""
+    row = frappe.db.sql(
+        """
+        SELECT {fn} AS varval
+        FROM `tabSalary Structure Assignment`
+        WHERE employee=%s AND docstatus=1 AND from_date <= %s
+        ORDER BY from_date DESC
+        LIMIT 1
+        """.format(fn=frappe.db.escape(fieldname, percent=False)),
+        (employee, as_of_date),
+        as_dict=True,
+    )
+    if not row:
+        return False
+    return flt(row[0].get("varval")) > 0
+
+
+def _remove_deduction_row(doc, component_name):
+    """Helper to clean up if the employee no longer qualifies."""
+    for r in list(doc.get("deductions") or []):
+        if r.salary_component == component_name:
+            doc.remove(r)
+    # also keep your reference field in sync if you use one
+    if hasattr(doc, "custom_weekly_absence_deduction"):
+        doc.set("custom_weekly_absence_deduction", 0)
+
+
 def _prev_or_same_saturday(d):
     d = getdate(d)
     back = (d.weekday() - WEEK_START_DOW) % 7
@@ -147,7 +178,10 @@ def apply_weekly_deduction(doc, method):
     if not (payroll_start and payroll_end):
         # fallback: do nothing rather than corrupt totals
         return
-
+    if not _ssa_variable_gt_zero(doc.employee, payroll_end, fieldname="variable"):
+        _remove_deduction_row(doc, DEDUCT_COMPONENT)
+        _recompute_totals(doc)  # keep draft figures correct if we removed something
+        return
     total = calculate_weekly_deduction(doc.employee, payroll_start, payroll_end)
 
     # keep the reference field (and trigger any formula watchers that DO listen)
