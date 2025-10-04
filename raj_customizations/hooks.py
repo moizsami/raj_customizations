@@ -34,7 +34,7 @@ app_license = "mit"
 
 doc_events = {
     "Salary Slip": {
-        "before_save": "raj_customizations.raj_customizations.trigger_overtime_absebse.before_save_salary_slip",
+        "before_validate": "raj_customizations.raj_customizations.trigger_overtime_absebse.before_save_salary_slip",
         "before_validate": "raj_customizations.public_holidays.set_public_holiday_count",
         "before_insert": "raj_customizations.public_holidays.set_public_holiday_count"
     },

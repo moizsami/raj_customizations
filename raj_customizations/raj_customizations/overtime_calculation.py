@@ -82,7 +82,7 @@ def apply_weekly_overtime(doc, method=None):
     found = False
     for row in (doc.earnings or []):
         if row.salary_component == target_component:
-            row.amount = combined_overtime
+            row.amount += combined_overtime
             found = True
             break
 
