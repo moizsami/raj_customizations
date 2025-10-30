@@ -36,6 +36,9 @@ doc_events = {
     "Salary Slip": {
         "before_save": "raj_customizations.raj_customizations.trigger_overtime_absebse.before_save_salary_slip",
         "before_validate": "raj_customizations.public_holidays.set_public_holiday_count",
+        "validate": "raj_customizations.last_checkin_validate.set_last_day_checkin_flag",
+        "before_validate": "raj_customizations.last_checkin_validate.set_last_day_checkin_flag",
+        "before_save": "raj_customizations.last_checkin_validate.set_last_day_checkin_flag",
         "before_insert": "raj_customizations.public_holidays.set_public_holiday_count"
     },
     
