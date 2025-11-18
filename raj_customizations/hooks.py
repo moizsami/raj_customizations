@@ -33,6 +33,13 @@ app_license = "mit"
 #app_include_js = "/assets/custom_app/js/workflow_reject.js"
 
 doc_events = {
+    # Global validation for Read Only role - applies to ALL doctypes
+    "*": {
+        "validate": "raj_customizations.read_only_validation.validate_read_only_permission",
+        "on_submit": "raj_customizations.read_only_validation.validate_read_only_on_submit",
+        "on_cancel": "raj_customizations.read_only_validation.validate_read_only_on_cancel",
+    },
+
     "Salary Slip": {
         "before_save": "raj_customizations.raj_customizations.trigger_overtime_absebse.before_save_salary_slip",
         "before_validate": "raj_customizations.public_holidays.set_public_holiday_count",
@@ -41,7 +48,7 @@ doc_events = {
         "before_save": "raj_customizations.last_checkin_validate.set_last_day_checkin_flag",
         "before_insert": "raj_customizations.public_holidays.set_public_holiday_count"
     },
-    
+
 }
 
 
