@@ -40,6 +40,7 @@ def validate_read_only_permission(doc, method=None):
 	It uses early exit pattern to minimize performance impact:
 	- Returns immediately for users without Read Only role
 	- Returns immediately for documents being loaded (not modified)
+	- Skips system/session doctypes to allow login and system operations
 
 	Args:
 		doc: The document being validated
@@ -47,6 +48,34 @@ def validate_read_only_permission(doc, method=None):
 	"""
 	# Early exit: Skip for system users (Administrator, Guest)
 	if frappe.session.user in ("Administrator", "Guest"):
+		return
+
+	# Early exit: Skip system and session-related doctypes
+	# These are needed for login, navigation, and system operations
+	ALLOWED_DOCTYPES = (
+		"Session",
+		"Activity Log",
+		"View Log",
+		"Access Log",
+		"Error Log",
+		"Route History",
+		"Comment",
+		"Version",
+		"Communication",
+		"Email Queue",
+		"Notification Log",
+		"Prepared Report",
+		"Document Follow",
+		"User Settings",
+		"DefaultValue",
+		"User Permission",
+		"DocShare",
+		"File",
+		"OAuth Bearer Token",
+		"Token Cache"
+	)
+
+	if doc.doctype in ALLOWED_DOCTYPES:
 		return
 
 	# Early exit: Skip if user doesn't have Read Only role
