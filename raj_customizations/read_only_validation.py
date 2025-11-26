@@ -82,6 +82,8 @@ def validate_read_only_permission(doc, method=None):
 		"Workspace Quick List",
 		"Workspace Shortcut",
 		"Desktop Icon",
+		"Dashboard Settings",
+		"Dashboard",
 		"Dashboard Chart",
 		"Dashboard Chart Field",
 		"Dashboard Chart Link",
