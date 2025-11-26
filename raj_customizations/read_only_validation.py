@@ -53,7 +53,12 @@ def validate_read_only_permission(doc, method=None):
 	# Early exit: Skip system and session-related doctypes
 	# These are needed for login, navigation, and system operations
 	ALLOWED_DOCTYPES = (
+		# Session and authentication
 		"Session",
+		"OAuth Bearer Token",
+		"Token Cache",
+
+		# Logging and tracking
 		"Activity Log",
 		"View Log",
 		"Access Log",
@@ -61,18 +66,40 @@ def validate_read_only_permission(doc, method=None):
 		"Route History",
 		"Comment",
 		"Version",
+
+		# Communication
 		"Communication",
 		"Email Queue",
 		"Notification Log",
-		"Prepared Report",
-		"Document Follow",
+
+		# User interface and workspace customization
+		"Workspace",
+		"Workspace Settings",
+		"Workspace Chart",
+		"Workspace Custom Block",
+		"Workspace Link",
+		"Workspace Number Card",
+		"Workspace Quick List",
+		"Workspace Shortcut",
+		"Desktop Icon",
+		"Dashboard Chart",
+		"Dashboard Chart Field",
+		"Dashboard Chart Link",
+		"Dashboard Chart Source",
+		"Number Card",
+		"Number Card Link",
+		"Custom HTML Block",
+
+		# User preferences and settings
 		"User Settings",
 		"DefaultValue",
 		"User Permission",
+		"Document Follow",
 		"DocShare",
-		"File",
-		"OAuth Bearer Token",
-		"Token Cache"
+
+		# System
+		"Prepared Report",
+		"File"
 	)
 
 	if doc.doctype in ALLOWED_DOCTYPES:
