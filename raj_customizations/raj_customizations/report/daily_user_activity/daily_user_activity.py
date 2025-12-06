@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import today, getdate
+from frappe.utils import today, getdate, add_days
 
 
 def execute(filters=None):
@@ -71,7 +71,7 @@ def get_data(filters):
 			"activity_type": "Created",
 			"doctype": row.get("doctype"),
 			"count": row.get("count"),
-			"user": row.get("owner") if user_filter else "All Users"
+			"user": row.get("user") or "All Users"
 		})
 
 	# Add updated records
@@ -80,7 +80,7 @@ def get_data(filters):
 			"activity_type": "Updated",
 			"doctype": row.get("doctype"),
 			"count": row.get("count"),
-			"user": row.get("modified_by") if user_filter else "All Users"
+			"user": row.get("user") or "All Users"
 		})
 
 	# Add cancelled records
@@ -89,7 +89,7 @@ def get_data(filters):
 			"activity_type": "Cancelled",
 			"doctype": row.get("doctype"),
 			"count": row.get("count"),
-			"user": row.get("modified_by") if user_filter else "All Users"
+			"user": row.get("user") or "All Users"
 		})
 
 	# Generate chart/dashboard data
@@ -99,113 +99,204 @@ def get_data(filters):
 
 
 def get_created_records(date, user_filter=None):
-	"""Get count of records created on the given date"""
-	conditions = "DATE(creation) = %(date)s"
-	params = {"date": getdate(date)}
+	"""Get count of records created on the given date by querying all doctypes"""
+	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
+	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	if user_filter:
-		conditions += " AND owner = %(user)s"
-		params["user"] = user_filter
+	# Get all doctypes that are standard and not single
+	doctypes = frappe.db.sql("""
+		SELECT name
+		FROM `tabDocType`
+		WHERE issingle = 0
+		AND istable = 0
+		AND name NOT LIKE 'old_%'
+	""", as_dict=1)
 
-	query = f"""
-		SELECT
-			doctype,
-			owner,
-			COUNT(*) as count
-		FROM
-			`tabVersion`
-		WHERE
-			{conditions}
-			AND docstatus != 2
-			AND data LIKE '%"changed":%"creation"%'
-		GROUP BY
-			doctype, owner
-		ORDER BY
-			count DESC
-	"""
+	results = []
 
-	# Alternative approach using Version table
-	# Get all doctypes that have records created today
-	result = frappe.db.sql("""
-		SELECT
-			ref_doctype as doctype,
-			owner,
-			COUNT(DISTINCT docname) as count
-		FROM
-			`tabVersion`
-		WHERE
-			DATE(creation) = %(date)s
-			{user_condition}
-			AND data LIKE '%"changed"%'
-			AND (data LIKE '%"added":%' OR creation = modified)
-		GROUP BY
-			ref_doctype, owner
-		ORDER BY
-			count DESC
-	""".format(
-		user_condition="AND owner = %(user)s" if user_filter else ""
-	), params, as_dict=1)
+	for dt in doctypes:
+		doctype = dt.get("name")
 
-	return result
+		# Skip if table doesn't exist
+		if not frappe.db.table_exists(f"tab{doctype}"):
+			continue
+
+		# Skip if doctype doesn't have creation field
+		if "creation" not in frappe.db.get_table_columns(doctype):
+			continue
+
+		try:
+			# Build query based on user filter
+			if user_filter:
+				count = frappe.db.sql("""
+					SELECT COUNT(*) as count, owner as user
+					FROM `tab{doctype}`
+					WHERE creation BETWEEN %(start_date)s AND %(end_date)s
+					AND owner = %(user)s
+					GROUP BY owner
+				""".format(doctype=doctype), {
+					"start_date": start_date,
+					"end_date": end_date,
+					"user": user_filter
+				}, as_dict=1)
+			else:
+				count = frappe.db.sql("""
+					SELECT COUNT(*) as count, 'All Users' as user
+					FROM `tab{doctype}`
+					WHERE creation BETWEEN %(start_date)s AND %(end_date)s
+				""".format(doctype=doctype), {
+					"start_date": start_date,
+					"end_date": end_date
+				}, as_dict=1)
+
+			if count and count[0].get("count") > 0:
+				results.append({
+					"doctype": doctype,
+					"count": count[0].get("count"),
+					"user": count[0].get("user")
+				})
+		except Exception as e:
+			# Skip doctypes that cause errors
+			continue
+
+	return sorted(results, key=lambda x: x.get("count"), reverse=True)
 
 
 def get_updated_records(date, user_filter=None):
 	"""Get count of records updated on the given date (excluding same-day creations)"""
-	conditions = "DATE(v.modified) = %(date)s"
-	params = {"date": getdate(date)}
+	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
+	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	if user_filter:
-		conditions += " AND v.modified_by = %(user)s"
-		params["user"] = user_filter
+	# Get all doctypes that are standard and not single
+	doctypes = frappe.db.sql("""
+		SELECT name
+		FROM `tabDocType`
+		WHERE issingle = 0
+		AND istable = 0
+		AND name NOT LIKE 'old_%'
+	""", as_dict=1)
 
-	# Get updates where creation date != update date
-	result = frappe.db.sql(f"""
-		SELECT
-			v.ref_doctype as doctype,
-			v.modified_by,
-			COUNT(DISTINCT v.docname) as count
-		FROM
-			`tabVersion` v
-		WHERE
-			{conditions}
-			AND DATE(v.creation) != %(date)s
-			AND v.data LIKE '%"changed"%'
-			AND v.data NOT LIKE '%"added":%'
-		GROUP BY
-			v.ref_doctype, v.modified_by
-		ORDER BY
-			count DESC
-	""", params, as_dict=1)
+	results = []
 
-	return result
+	for dt in doctypes:
+		doctype = dt.get("name")
+
+		# Skip if table doesn't exist
+		if not frappe.db.table_exists(f"tab{doctype}"):
+			continue
+
+		# Skip if doctype doesn't have modified field
+		if "modified" not in frappe.db.get_table_columns(doctype):
+			continue
+
+		# Skip if doctype doesn't have creation field
+		if "creation" not in frappe.db.get_table_columns(doctype):
+			continue
+
+		try:
+			# Build query based on user filter
+			if user_filter:
+				count = frappe.db.sql("""
+					SELECT COUNT(*) as count, modified_by as user
+					FROM `tab{doctype}`
+					WHERE modified BETWEEN %(start_date)s AND %(end_date)s
+					AND DATE(creation) != DATE(modified)
+					AND modified_by = %(user)s
+					GROUP BY modified_by
+				""".format(doctype=doctype), {
+					"start_date": start_date,
+					"end_date": end_date,
+					"user": user_filter
+				}, as_dict=1)
+			else:
+				count = frappe.db.sql("""
+					SELECT COUNT(*) as count, 'All Users' as user
+					FROM `tab{doctype}`
+					WHERE modified BETWEEN %(start_date)s AND %(end_date)s
+					AND DATE(creation) != DATE(modified)
+				""".format(doctype=doctype), {
+					"start_date": start_date,
+					"end_date": end_date
+				}, as_dict=1)
+
+			if count and count[0].get("count") > 0:
+				results.append({
+					"doctype": doctype,
+					"count": count[0].get("count"),
+					"user": count[0].get("user")
+				})
+		except Exception as e:
+			# Skip doctypes that cause errors
+			continue
+
+	return sorted(results, key=lambda x: x.get("count"), reverse=True)
 
 
 def get_cancelled_records(date, user_filter=None):
 	"""Get count of records cancelled on the given date"""
-	conditions = "DATE(v.modified) = %(date)s"
-	params = {"date": getdate(date)}
+	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
+	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	if user_filter:
-		conditions += " AND v.modified_by = %(user)s"
-		params["user"] = user_filter
+	# Get all doctypes that are standard and not single
+	doctypes = frappe.db.sql("""
+		SELECT name
+		FROM `tabDocType`
+		WHERE issingle = 0
+		AND istable = 0
+		AND is_submittable = 1
+		AND name NOT LIKE 'old_%'
+	""", as_dict=1)
 
-	result = frappe.db.sql(f"""
-		SELECT
-			v.ref_doctype as doctype,
-			v.modified_by,
-			COUNT(DISTINCT v.docname) as count
-		FROM
-			`tabVersion` v
-		WHERE
-			{conditions}
-			AND v.data LIKE '%"docstatus":%2%'
-		GROUP BY
-			v.ref_doctype, v.modified_by
-		ORDER BY
-			count DESC
-	""", params, as_dict=1)
+	results = []
 
-	return result
+	for dt in doctypes:
+		doctype = dt.get("name")
+
+		# Skip if table doesn't exist
+		if not frappe.db.table_exists(f"tab{doctype}"):
+			continue
+
+		# Skip if doctype doesn't have modified field
+		if "modified" not in frappe.db.get_table_columns(doctype):
+			continue
+
+		try:
+			# Build query based on user filter
+			if user_filter:
+				count = frappe.db.sql("""
+					SELECT COUNT(*) as count, modified_by as user
+					FROM `tab{doctype}`
+					WHERE modified BETWEEN %(start_date)s AND %(end_date)s
+					AND docstatus = 2
+					AND modified_by = %(user)s
+					GROUP BY modified_by
+				""".format(doctype=doctype), {
+					"start_date": start_date,
+					"end_date": end_date,
+					"user": user_filter
+				}, as_dict=1)
+			else:
+				count = frappe.db.sql("""
+					SELECT COUNT(*) as count, 'All Users' as user
+					FROM `tab{doctype}`
+					WHERE modified BETWEEN %(start_date)s AND %(end_date)s
+					AND docstatus = 2
+				""".format(doctype=doctype), {
+					"start_date": start_date,
+					"end_date": end_date
+				}, as_dict=1)
+
+			if count and count[0].get("count") > 0:
+				results.append({
+					"doctype": doctype,
+					"count": count[0].get("count"),
+					"user": count[0].get("user")
+				})
+		except Exception as e:
+			# Skip doctypes that cause errors
+			continue
+
+	return sorted(results, key=lambda x: x.get("count"), reverse=True)
 
 
 def get_chart_data(created_data, updated_data, cancelled_data):

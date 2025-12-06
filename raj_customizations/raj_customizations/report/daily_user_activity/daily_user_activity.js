@@ -18,10 +18,6 @@ frappe.query_reports["Daily User Activity"] = {
 		}
 	],
 
-	"onload": function(report) {
-		// Add custom buttons or functionality if needed
-	},
-
 	"formatter": function(value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
 
@@ -31,7 +27,7 @@ frappe.query_reports["Daily User Activity"] = {
 				data-doctype="${data.doctype}"
 				data-activity="${data.activity_type}"
 				data-user="${data.user}"
-				style="cursor: pointer; color: #2490ef; text-decoration: underline;">
+				style="cursor: pointer; color: #2490ef; font-weight: bold;">
 				${data.count}
 			</a>`;
 		}
