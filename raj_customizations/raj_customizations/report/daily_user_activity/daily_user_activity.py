@@ -103,13 +103,15 @@ def get_created_records(date, user_filter=None):
 	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
 	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	# Get all doctypes that are standard and not single
+	# Get all doctypes that are standard and not single, excluding frappe app doctypes
 	doctypes = frappe.db.sql("""
-		SELECT name
-		FROM `tabDocType`
-		WHERE issingle = 0
-		AND istable = 0
-		AND name NOT LIKE 'old_%'
+		SELECT dt.name
+		FROM `tabDocType` dt
+		LEFT JOIN `tabModule Def` md ON dt.module = md.name
+		WHERE dt.issingle = 0
+		AND dt.istable = 0
+		AND dt.name NOT LIKE 'old_%'
+		AND (md.app_name IS NULL OR md.app_name != 'frappe')
 	""", as_dict=1)
 
 	results = []
@@ -117,12 +119,13 @@ def get_created_records(date, user_filter=None):
 	for dt in doctypes:
 		doctype = dt.get("name")
 
-		# Skip if table doesn't exist
-		if not frappe.db.table_exists(f"tab{doctype}"):
-			continue
-
-		# Skip if doctype doesn't have creation field
-		if "creation" not in frappe.db.get_table_columns(doctype):
+		try:
+			# Skip if doctype doesn't have creation field
+			columns = frappe.db.get_table_columns(doctype)
+			if "creation" not in columns or "owner" not in columns:
+				continue
+		except Exception:
+			# Table doesn't exist or other error
 			continue
 
 		try:
@@ -167,13 +170,15 @@ def get_updated_records(date, user_filter=None):
 	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
 	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	# Get all doctypes that are standard and not single
+	# Get all doctypes that are standard and not single, excluding frappe app doctypes
 	doctypes = frappe.db.sql("""
-		SELECT name
-		FROM `tabDocType`
-		WHERE issingle = 0
-		AND istable = 0
-		AND name NOT LIKE 'old_%'
+		SELECT dt.name
+		FROM `tabDocType` dt
+		LEFT JOIN `tabModule Def` md ON dt.module = md.name
+		WHERE dt.issingle = 0
+		AND dt.istable = 0
+		AND dt.name NOT LIKE 'old_%'
+		AND (md.app_name IS NULL OR md.app_name != 'frappe')
 	""", as_dict=1)
 
 	results = []
@@ -181,16 +186,13 @@ def get_updated_records(date, user_filter=None):
 	for dt in doctypes:
 		doctype = dt.get("name")
 
-		# Skip if table doesn't exist
-		if not frappe.db.table_exists(f"tab{doctype}"):
-			continue
-
-		# Skip if doctype doesn't have modified field
-		if "modified" not in frappe.db.get_table_columns(doctype):
-			continue
-
-		# Skip if doctype doesn't have creation field
-		if "creation" not in frappe.db.get_table_columns(doctype):
+		try:
+			# Skip if doctype doesn't have required fields
+			columns = frappe.db.get_table_columns(doctype)
+			if "modified" not in columns or "creation" not in columns or "modified_by" not in columns:
+				continue
+		except Exception:
+			# Table doesn't exist or other error
 			continue
 
 		try:
@@ -237,14 +239,16 @@ def get_cancelled_records(date, user_filter=None):
 	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
 	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	# Get all doctypes that are standard and not single
+	# Get all doctypes that are standard and not single, excluding frappe app doctypes
 	doctypes = frappe.db.sql("""
-		SELECT name
-		FROM `tabDocType`
-		WHERE issingle = 0
-		AND istable = 0
-		AND is_submittable = 1
-		AND name NOT LIKE 'old_%'
+		SELECT dt.name
+		FROM `tabDocType` dt
+		LEFT JOIN `tabModule Def` md ON dt.module = md.name
+		WHERE dt.issingle = 0
+		AND dt.istable = 0
+		AND dt.is_submittable = 1
+		AND dt.name NOT LIKE 'old_%'
+		AND (md.app_name IS NULL OR md.app_name != 'frappe')
 	""", as_dict=1)
 
 	results = []
@@ -252,12 +256,13 @@ def get_cancelled_records(date, user_filter=None):
 	for dt in doctypes:
 		doctype = dt.get("name")
 
-		# Skip if table doesn't exist
-		if not frappe.db.table_exists(f"tab{doctype}"):
-			continue
-
-		# Skip if doctype doesn't have modified field
-		if "modified" not in frappe.db.get_table_columns(doctype):
+		try:
+			# Skip if doctype doesn't have required fields
+			columns = frappe.db.get_table_columns(doctype)
+			if "modified" not in columns or "docstatus" not in columns or "modified_by" not in columns:
+				continue
+		except Exception:
+			# Table doesn't exist or other error
 			continue
 
 		try:
