@@ -21,6 +21,26 @@ frappe.query_reports["Daily User Activity"] = {
 	"formatter": function(value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
 
+		// Apply row background color based on activity type
+		if (column.colIndex == 0 && data && data.activity_type) {
+			let bg_color = '';
+			if (data.activity_type === 'Created') {
+				bg_color = '#d4edda'; // Light green
+			} else if (data.activity_type === 'Updated') {
+				bg_color = '#d1ecf1'; // Light blue
+			} else if (data.activity_type === 'Cancelled') {
+				bg_color = '#f8d7da'; // Light red
+			}
+
+			if (bg_color) {
+				// Use CSS to set the row background color
+				value = `<style>
+					.dt-row[data-row-index="${row}"] { background-color: ${bg_color} !important; }
+					.dt-row[data-row-index="${row}"]:hover { background-color: ${bg_color} !important; opacity: 0.9; }
+				</style>` + value;
+			}
+		}
+
 		// Make the count field clickable with proper styling
 		if (column.fieldname === "count" && data && data.doctype) {
 			value = `<a class="activity-count-link"

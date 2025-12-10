@@ -103,16 +103,18 @@ def get_created_records(date, user_filter=None):
 	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
 	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	# Get all doctypes that are standard and not single, excluding frappe app doctypes
+	# Get all doctypes that are standard and not single, excluding frappe app doctypes and specific doctypes
+	excluded_doctypes = ['GL Entry', 'Stock Ledger Entry', 'Extra Notification Log', 'Bin', 'Payment Ledger Entry']
 	doctypes = frappe.db.sql("""
 		SELECT dt.name
 		FROM `tabDocType` dt
 		LEFT JOIN `tabModule Def` md ON dt.module = md.name
 		WHERE dt.issingle = 0
 		AND dt.istable = 0
-		AND dt.name NOT LIKE 'old_%'
+		AND dt.name NOT LIKE 'old_%%'
 		AND (md.app_name IS NULL OR md.app_name != 'frappe')
-	""", as_dict=1)
+		AND dt.name NOT IN %(excluded_doctypes)s
+	""", {"excluded_doctypes": excluded_doctypes}, as_dict=1)
 
 	results = []
 
@@ -170,16 +172,18 @@ def get_updated_records(date, user_filter=None):
 	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
 	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	# Get all doctypes that are standard and not single, excluding frappe app doctypes
+	# Get all doctypes that are standard and not single, excluding frappe app doctypes and specific doctypes
+	excluded_doctypes = ['GL Entry', 'Stock Ledger Entry', 'Extra Notification Log', 'Bin', 'Payment Ledger Entry']
 	doctypes = frappe.db.sql("""
 		SELECT dt.name
 		FROM `tabDocType` dt
 		LEFT JOIN `tabModule Def` md ON dt.module = md.name
 		WHERE dt.issingle = 0
 		AND dt.istable = 0
-		AND dt.name NOT LIKE 'old_%'
+		AND dt.name NOT LIKE 'old_%%'
 		AND (md.app_name IS NULL OR md.app_name != 'frappe')
-	""", as_dict=1)
+		AND dt.name NOT IN %(excluded_doctypes)s
+	""", {"excluded_doctypes": excluded_doctypes}, as_dict=1)
 
 	results = []
 
@@ -239,7 +243,8 @@ def get_cancelled_records(date, user_filter=None):
 	start_date = getdate(date).strftime('%Y-%m-%d 00:00:00')
 	end_date = getdate(date).strftime('%Y-%m-%d 23:59:59')
 
-	# Get all doctypes that are standard and not single, excluding frappe app doctypes
+	# Get all doctypes that are standard and not single, excluding frappe app doctypes and specific doctypes
+	excluded_doctypes = ['GL Entry', 'Stock Ledger Entry', 'Extra Notification Log', 'Bin', 'Payment Ledger Entry']
 	doctypes = frappe.db.sql("""
 		SELECT dt.name
 		FROM `tabDocType` dt
@@ -247,9 +252,10 @@ def get_cancelled_records(date, user_filter=None):
 		WHERE dt.issingle = 0
 		AND dt.istable = 0
 		AND dt.is_submittable = 1
-		AND dt.name NOT LIKE 'old_%'
+		AND dt.name NOT LIKE 'old_%%'
 		AND (md.app_name IS NULL OR md.app_name != 'frappe')
-	""", as_dict=1)
+		AND dt.name NOT IN %(excluded_doctypes)s
+	""", {"excluded_doctypes": excluded_doctypes}, as_dict=1)
 
 	results = []
 
