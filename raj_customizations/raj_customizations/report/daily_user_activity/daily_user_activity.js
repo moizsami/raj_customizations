@@ -21,26 +21,6 @@ frappe.query_reports["Daily User Activity"] = {
 	"formatter": function(value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
 
-		// Apply row background color based on activity type
-		if (column.colIndex == 0 && data && data.activity_type) {
-			let bg_color = '';
-			if (data.activity_type === 'Created') {
-				bg_color = '#d4edda'; // Light green
-			} else if (data.activity_type === 'Updated') {
-				bg_color = '#d1ecf1'; // Light blue
-			} else if (data.activity_type === 'Cancelled') {
-				bg_color = '#f8d7da'; // Light red
-			}
-
-			if (bg_color) {
-				// Use CSS to set the row background color
-				value = `<style>
-					.dt-row[data-row-index="${row}"] { background-color: ${bg_color} !important; }
-					.dt-row[data-row-index="${row}"]:hover { background-color: ${bg_color} !important; opacity: 0.9; }
-				</style>` + value;
-			}
-		}
-
 		// Make the count field clickable with proper styling
 		if (column.fieldname === "count" && data && data.doctype) {
 			value = `<a class="activity-count-link"
@@ -54,6 +34,42 @@ frappe.query_reports["Daily User Activity"] = {
 		}
 
 		return value;
+	},
+
+	"after_datatable_render": function(datatable) {
+		// Apply row colors based on activity type using DataTable API
+		const data = datatable.datamanager.data;
+
+		data.forEach((row_data, index) => {
+			let bg_color = '';
+
+			// Determine color based on activity type
+			if (row_data && row_data[0]) {  // row_data[0] is the activity_type column
+				const activity_type = row_data[0].content || row_data[0];
+
+				if (activity_type === 'Created') {
+					bg_color = '#d4edda'; // Light green
+				} else if (activity_type === 'Updated') {
+					bg_color = '#d1ecf1'; // Light blue
+				} else if (activity_type === 'Cancelled') {
+					bg_color = '#f8d7da'; // Light red
+				}
+			}
+
+			// Apply background color to the row
+			if (bg_color) {
+				const row_element = datatable.bodyRenderer.visibleRowIndices.includes(index)
+					? datatable.bodyRenderer.getRowHTML(index)
+					: null;
+
+				if (row_element) {
+					$(row_element).css('background-color', bg_color);
+				}
+
+				// Also update directly via DOM
+				$(datatable.wrapper).find(`.dt-row[data-row-index="${index}"]`).css('background-color', bg_color);
+			}
+		});
 	},
 
 	"onload": function(report) {
