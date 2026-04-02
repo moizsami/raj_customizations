@@ -55,7 +55,7 @@ doc_events = {
 # include js, css files in header of desk.html
 # app_include_css = "/assets/raj_customizations/css/raj_customizations.css"
 # app_include_js = "/assets/raj_customizations/js/raj_customizations.js"
-app_include_js = "/assets/raj_customizations/js/general_ledger_override_filter_and_reorder_columns.js"
+app_include_js = "/assets/raj_customizations/js/general_ledger_override_filter_and_reorder_columns_v2.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/raj_customizations/css/raj_customizations.css"

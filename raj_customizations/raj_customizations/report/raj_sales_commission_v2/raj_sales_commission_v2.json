@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": null,
- "modified": "2026-04-01 02:16:29.601225",
+ "modified": "2026-04-01 14:52:29.680356",
  "modified_by": "Administrator",
  "module": "Raj Customizations",
  "name": "Raj Sales Commission V2",
@@ -19,6 +19,10 @@
  "ref_doctype": "Sales Invoice",
  "report_name": "Raj Sales Commission V2",
  "report_type": "Script Report",
- "roles": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
  "timeout": 0
 }

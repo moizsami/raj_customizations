@@ -39,6 +39,17 @@ function reorder_remarks_column() {
   let columns = frappe.query_report && frappe.query_report.columns;
   if (!columns || !columns.length) return;
 
+  console.log("frappe.query_report.columns22222");
+  console.log(frappe.query_report.columns);
+  console.log("frappe.query_report.columns11111");
+  // Remove "GL Entry" column
+  let gl_idx = columns.findIndex((c) => c.fieldname === "gl_entry");
+
+  if (gl_idx !== -1) {
+    columns.splice(gl_idx, 1);
+    console.log("✅ GL Entry column removed");
+  }
+
   let remarks_idx = columns.findIndex((c) => c.fieldname === "remarks");
   let balance_idx = columns.findIndex((c) => c.fieldname === "balance");
 
