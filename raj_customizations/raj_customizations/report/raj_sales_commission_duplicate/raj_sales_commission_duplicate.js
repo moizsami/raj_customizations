@@ -1,7 +1,7 @@
 // Copyright (c) 2026, moiz@samtech-solutions.com and contributors
 // For license information, please see license.txt
 
-frappe.query_reports["Raj Sales Commission"] = {
+frappe.query_reports["Raj Sales Commission Duplicate"] = {
   filters: [
     {
       fieldname: "from_date",

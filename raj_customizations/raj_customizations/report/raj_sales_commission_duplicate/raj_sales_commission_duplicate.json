@@ -2,7 +2,7 @@
  "add_total_row": 1,
  "add_translate_data": 0,
  "columns": [],
- "creation": "2026-04-01 02:16:29.601225",
+ "creation": "2026-04-08 20:30:55.188211",
  "disabled": 1,
  "docstatus": 0,
  "doctype": "Report",
@@ -10,19 +10,15 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": null,
- "modified": "2026-04-08 20:41:39.069224",
+ "modified": "2026-04-08 20:42:17.372172",
  "modified_by": "Administrator",
  "module": "Raj Customizations",
- "name": "Raj Sales Commission V2",
+ "name": "Raj Sales Commission Duplicate",
  "owner": "Administrator",
  "prepared_report": 0,
  "ref_doctype": "Sales Invoice",
- "report_name": "Raj Sales Commission V2",
+ "report_name": "Raj Sales Commission Duplicate",
  "report_type": "Script Report",
- "roles": [
-  {
-   "role": "System Manager"
-  }
- ],
+ "roles": [],
  "timeout": 0
 }
