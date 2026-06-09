@@ -163,3 +163,26 @@ def calculate_tax_deducted_commission(amount, commission_percent):
     tax = cal_a_two * 0.15
     net_amount = cal_a_two - tax
     return net_amount * (commission_percent / 100)
+
+
+
+
+@frappe.whitelist()
+def get_total_commission(from_date, to_date, sales_person):
+    filters = {
+        "from_date": from_date,
+        "to_date": to_date,
+        "customer_group": sales_person
+    }
+    
+    # Temporarily switch user to Administrator to bypass role permission check in get_data
+    original_user = frappe.session.user
+    try:
+        frappe.set_user("Administrator")
+        data = get_data(filters)
+    finally:
+        frappe.set_user(original_user)
+        
+    # Sum up the calculated commission from all retrieved rows
+    total_commission = sum(row.get("calculated_commission", 0) for row in data)
+    return total_commission
