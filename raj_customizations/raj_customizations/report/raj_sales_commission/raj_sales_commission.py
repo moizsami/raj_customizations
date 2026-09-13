@@ -17,16 +17,31 @@ def get_columns():
         {"label": _("Calculated Commission"), "fieldname": "calculated_commission", "fieldtype": "Currency", "width": 150},
     ]
 
+def get_sales_person_for_user(user):
+    """Sales Person of the viewer: by custom_user, falling back to their Employee link."""
+    sales_person = frappe.db.get_value("Sales Person", {"custom_user": user}, "name")
+    if sales_person:
+        return sales_person
+
+    employee = frappe.db.get_value("Employee", {"user_id": user}, "name")
+    return frappe.db.get_value("Sales Person", {"employee": employee}, "name") if employee else None
+
+
 def get_data(filters):
     from_date = filters.get("from_date")
     to_date = filters.get("to_date")
     sales_persons = filters.get("customer_group")
 
-    user_sales_person = frappe.db.get_value("Sales Person", {"custom_user": frappe.session.user}, "name")
     allowed_to_see_all = "Admin Commission Reports" in frappe.get_roles(frappe.session.user)
 
-    if not allowed_to_see_all and sales_persons and sales_persons != user_sales_person:
-        return []
+    if not allowed_to_see_all:
+        user_sales_person = get_sales_person_for_user(frappe.session.user)
+
+        if not user_sales_person:
+            frappe.throw(_("Your user ({0}) is not linked to a Sales Person. Ask an administrator to set the User field on your Sales Person record.").format(frappe.session.user))
+
+        if sales_persons and sales_persons != user_sales_person:
+            frappe.throw(_("You can only view commission for your own Sales Person ({0}).").format(user_sales_person))
 
     # Clear document cache to avoid stale data across refreshes
     frappe.local.document_cache = {}
