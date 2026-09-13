@@ -49,6 +49,10 @@ doc_events = {
       #  "before_insert": "raj_customizations.public_holidays.set_public_holiday_count"
     },
 
+    "Journal Entry": {
+        "validate": "raj_customizations.events.journal_entry.validate_cost_center_for_expense_accounts",
+    },
+
 }
 
 
@@ -72,7 +76,7 @@ app_include_js = "/assets/raj_customizations/js/general_ledger_override_filter_a
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Journal Entry": "public/js/journal_entry.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
