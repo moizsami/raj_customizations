@@ -21,7 +21,7 @@ frappe.ui.form.on("Journal Entry Account", {
   },
 });
 
-const CC_ALLOCATION = "Cost Center Allocation - Samtech";
+const CC_ALLOCATION = "Cost Center Expense Allocation";
 const CC_AMOUNT_FIELDS = [
   "debit_in_account_currency",
   "credit_in_account_currency",

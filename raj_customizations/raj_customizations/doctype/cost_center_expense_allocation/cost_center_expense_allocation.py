@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class CostCenterAllocationSamtech(Document):
+class CostCenterExpenseAllocation(Document):
 	pass

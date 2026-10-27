@@ -62,7 +62,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Cost Center Allocation - Samtech",
+   "options": "Cost Center Expense Allocation",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -72,7 +72,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Cost Center Allocation - Samtech",
+   "options": "Cost Center Expense Allocation",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -93,7 +93,7 @@
  "modified": "2026-10-27 11:53:42.544596",
  "modified_by": "Administrator",
  "module": "Raj Customizations",
- "name": "Cost Center Allocation - Samtech",
+ "name": "Cost Center Expense Allocation",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [

@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestCostCenterAllocationSamtech(FrappeTestCase):
+class TestCostCenterExpenseAllocation(FrappeTestCase):
 	pass
